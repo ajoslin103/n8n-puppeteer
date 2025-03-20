@@ -6,15 +6,6 @@ ARG N8N_VERSION
 ARG PUPPETEER_VERSION
 ARG PLAYWRIGHT_VERSION
 
-# Copy your CA certificate
-COPY ./tmp/pki/combined.pem /etc/ssl/certs/custom-ca.pem
-
-# Set the NODE_EXTRA_CA_CERTS environment variable
-ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/custom-ca.pem
-
-# Ensure correct permissions
-RUN chmod 644 /etc/ssl/certs/custom-ca.pem
-
 # Install system dependencies required by Puppeteer and Playwright
 RUN apt-get update && apt-get install -y \
     chromium \
