@@ -37,15 +37,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 # Create the directory for n8n's configuration
 RUN mkdir -p /home/node/.n8n && chown node:node /home/node/.n8n
 
-# install SOMETHING ** MOVE IT UP NEXT TIME WE BUILD FROM SCRATCH **
-# RUN apt-get update && apt-get install -y \
-#     && rm -rf /var/lib/apt/lists/*
-
 # Switch to the 'node' user
 USER node
-
-# Set the NODE_EXTRA_CA_CERTS environment variable
-ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/custom-ca.pem
 
 # Use tini as the init system
 ENTRYPOINT ["/usr/bin/tini", "--"]
