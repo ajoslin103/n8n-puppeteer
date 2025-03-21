@@ -42,8 +42,9 @@ build-image:
 		-t n8n-${N8N_VERSION} \
 		.
 
-# Make target to create Docker volume, network if not exist, start container
-docker-up: build-image
+# Make target to get ready, network and volumes if not exist
+# TODO: take a param to --force a rebuild of the image
+docker-ready: build-image
 	@echo "Checking if network exists..."
 	@if docker network inspect n8n_network > /dev/null 2>&1; then \
 		echo "Network 'n8n_network' already exists, hopping to the next task 🦘."; \
@@ -65,6 +66,10 @@ docker-up: build-image
 		echo "Creating volume..."; \
 		docker volume create n8n_backups; \
 	fi
+
+# Make target to start the Docker container
+# TODO: take a param to use a supplied backups volume instead of a docker volume
+docker-up: docker-ready
 	@echo "Running Docker container..."
 	docker run -d \
 		--name n8n-${N8N_VERSION} \
@@ -75,7 +80,7 @@ docker-up: build-image
 		-v n8n_backups:/home/node/n8n_backups \
 		--network n8n_network \
 		n8n-${N8N_VERSION}
-	@echo "use: `make docker-down` to stop the container."
+	#echo "use: 'make docker-down' to stop the container."
 
 # Make target to stop docker container
 docker-down:

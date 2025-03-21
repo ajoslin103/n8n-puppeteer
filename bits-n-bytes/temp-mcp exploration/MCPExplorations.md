@@ -1,22 +1,25 @@
 ## Exploration
 
-##### See what happens when I leave you kids alone!?!?!
+# See what happens when I leave you kids alone!?!?!
 
 Anthropic dropped MCP on 11/2024, it’s a [discoverable] protocol for connecting Agents to external data and tools.
 
-https://www.youtube.com/watch?v=sb5hCcFYPIE
+Just google on MCP & Insane, you'll likely be excited about it as I am !!
 
-evolution of MCP
+TLDR: this is a tectonic shift for agents - get ready to hang on - AI just took a Huuuuuuuge step forward
 
-https://youtu.be/m0YrxLnFPzQ?t=181
+Nearly every video you watch will be using n8n (a workflow tool that's been around for several years)
 
-Basically MCP moves the reponsibility/difficulty of connecting to data sources, over to the owners of those data sources as MCP Servers
+This repo gives it to you in Docker with Puppeteer and Playwright already installed (and working soon I hope !!!)
+
+https://github.com/ajoslin103/n8n-puppeteer
+
+Have fun !!
 
 Al;
 
 https://modelcontextprotocol.io
 
-TLDR: this is a tectonic shift for agents - get ready to hang on - AI just took a Huuuuuuuge step forward
 
 https://github.com/modelcontextprotocol
 
