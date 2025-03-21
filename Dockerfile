@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-0 \
     tini \
     xdg-utils \
+    xvfb \
     && rm -rf /var/lib/apt/lists/*
 
 # Install n8n globally with the specified version

@@ -4,7 +4,7 @@ adds playwright and switches to debian
 
 adds mcp-playwright server/tool - https://github.com/executeautomation/mcp-playwright
 
-
+if you start getting certificate errors from the licensing module - delete the n8n volume and restart (you'll loose your workflows also...)
 
 ![n8n.io - Workflow Automation](https://user-images.githubusercontent.com/65276001/173571060-9f2f6d7b-bac0-43b6-bdb2-001da9694058.png)
 
