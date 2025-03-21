@@ -1,0 +1,153 @@
+{
+  "tools": [
+    {
+      "name": "playwright_navigate",
+      "description": "Navigate to a URL",
+      "schema": [
+        "url",
+        "width",
+        "height",
+        "timeout",
+        "waitUntil",
+        "headless"
+      ]
+    },
+    {
+      "name": "playwright_screenshot",
+      "description": "Take a screenshot of the current page or a specific element",
+      "schema": [
+        "name",
+        "selector",
+        "width",
+        "height",
+        "storeBase64",
+        "fullPage",
+        "savePng",
+        "downloadsDir"
+      ]
+    },
+    {
+      "name": "playwright_click",
+      "description": "Click an element on the page",
+      "schema": [
+        "selector"
+      ]
+    },
+    {
+      "name": "playwright_iframe_click",
+      "description": "Click an element in an iframe on the page",
+      "schema": [
+        "iframeSelector",
+        "selector"
+      ]
+    },
+    {
+      "name": "playwright_fill",
+      "description": "fill out an input field",
+      "schema": [
+        "selector",
+        "value"
+      ]
+    },
+    {
+      "name": "playwright_select",
+      "description": "Select an element on the page with Select tag",
+      "schema": [
+        "selector",
+        "value"
+      ]
+    },
+    {
+      "name": "playwright_hover",
+      "description": "Hover an element on the page",
+      "schema": [
+        "selector"
+      ]
+    },
+    {
+      "name": "playwright_evaluate",
+      "description": "Execute JavaScript in the browser console",
+      "schema": [
+        "script"
+      ]
+    },
+    {
+      "name": "playwright_console_logs",
+      "description": "Retrieve console logs from the browser with filtering options",
+      "schema": [
+        "type",
+        "search",
+        "limit",
+        "clear"
+      ]
+    },
+    {
+      "name": "playwright_close",
+      "description": "Close the browser and release all resources",
+      "schema": []
+    },
+    {
+      "name": "playwright_get",
+      "description": "Perform an HTTP GET request",
+      "schema": [
+        "url"
+      ]
+    },
+    {
+      "name": "playwright_post",
+      "description": "Perform an HTTP POST request",
+      "schema": [
+        "url",
+        "value",
+        "token",
+        "headers"
+      ]
+    },
+    {
+      "name": "playwright_put",
+      "description": "Perform an HTTP PUT request",
+      "schema": [
+        "url",
+        "value"
+      ]
+    },
+    {
+      "name": "playwright_patch",
+      "description": "Perform an HTTP PATCH request",
+      "schema": [
+        "url",
+        "value"
+      ]
+    },
+    {
+      "name": "playwright_delete",
+      "description": "Perform an HTTP DELETE request",
+      "schema": [
+        "url"
+      ]
+    },
+    {
+      "name": "playwright_expect_response",
+      "description": "Ask Playwright to start waiting for a HTTP response. This tool initiates the wait operation but does not wait for its completion.",
+      "schema": [
+        "id",
+        "url"
+      ]
+    },
+    {
+      "name": "playwright_assert_response",
+      "description": "Wait for and validate a previously initiated HTTP response wait operation.",
+      "schema": [
+        "id",
+        "value"
+      ]
+    },
+    {
+      "name": "playwright_custom_user_agent",
+      "description": "Set a custom User Agent for the browser",
+      "schema": [
+        "userAgent"
+      ]
+    }
+  ]
+}

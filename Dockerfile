@@ -1,37 +1,53 @@
-# Use the official Node.js 20 image based on Alpine for a lightweight base
-FROM node:20-alpine
+# Use a Debian-based Node.js 20 image
+FROM node:20-slim
 
-# Define build arguments for N8N and Puppeteer versions, and necessary dependencies for Puppeteer
+# Define build arguments for N8N, Puppeteer, and Playwright versions
 ARG N8N_VERSION
 ARG PUPPETEER_VERSION
-ARG PUPPETEER_DEPS="chromium nss freetype harfbuzz ttf-freefont yarn libstdc++ bash tini"
+ARG PLAYWRIGHT_VERSION
 
-# Install system dependencies required by Puppeteer (e.g., Chromium and fonts)
-RUN apk add --no-cache ${PUPPETEER_DEPS}
+# Install system dependencies required by Puppeteer and Playwright
+RUN apt-get update && apt-get install -y \
+    chromium \
+    fonts-liberation \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm-dev \
+    libgtk-3-0 \
+    tini \
+    xdg-utils \
+    xvfb \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install tini (used to handle the init process and ensure that the container keeps running)
-RUN apk add --no-cache tini
+# Launch the x-windows server while we're still root
+RUN /usr/bin/Xvfb :99 -screen 0 1024x768x24 &
 
-# Install n8n globally with the specified version and without development dependencies
-RUN npm install -g --omit=dev n8n@${N8N_VERSION}
+# Install n8n globally with the specified version
+RUN npm install -g n8n@${N8N_VERSION}
 
-# Install Puppeteer (core version without Chromium, since we’re using the installed version of Chromium)
-RUN npm install puppeteer-core@${PUPPETEER_VERSION} --prefix /usr/local/lib/node_modules/n8n \
-    && npm install -g --omit=dev cheerio n8n-workflow
+# Install Puppeteer and Playwright
+RUN npm install -g puppeteer-core@${PUPPETEER_VERSION} playwright@${PLAYWRIGHT_VERSION} \
+    && npx playwright install chromium
 
-# Set environment variables for Puppeteer to use the installed Chromium instead of downloading it
+# Set environment variables for Puppeteer and Playwright
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Create the directory for n8n's configuration and set the appropriate ownership for the 'node' user
+# Create the directory for n8n's configuration
 RUN mkdir -p /home/node/.n8n && chown node:node /home/node/.n8n
+RUN mkdir -p /home/node/backups && chown node:node /home/node/backups
 
-# Switch to the 'node' user to run the application with least privilege
+# Switch to the 'node' user
 USER node
 
-# Set default shell to /bin/sh (could be useful for scripts that use shell commands)
-ENV SHELL=/bin/sh
+# Use tini as the init system
+ENTRYPOINT ["/usr/bin/tini", "--"]
 
-# Use tini as the init system to ensure proper shutdown of n8n and to handle signals correctly
-# The entrypoint executes n8n using tini
-ENTRYPOINT ["/sbin/tini", "--", "n8n"]
+# Set the command to run n8n
+CMD ["n8n"]

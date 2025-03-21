@@ -8,8 +8,21 @@ endif
 create-env:
 	@echo "Generating .env file..."
 	@ENCRYPTION_KEY=$$(openssl rand -hex 32) && \
-	printf "PUPPETEER_VERSION=24.4.0\nN8N_VERSION=1.74.4\nN8N_ENCRYPTION_KEY=$$ENCRYPTION_KEY\nN8N_SECURE_COOKIE=false\nNODE_FUNCTION_ALLOW_EXTERNAL=puppeteer-core,cheerio,n8n-workflow\nN8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\nN8N_RUNNERS_ENABLED=true\nN8N_LOG_LEVEL=info\nN8N_LOG_OUTPUT=console\n" > .env
-	@echo ".env file created successfully."
+    printf " \
+		PUPPETEER_VERSION=24.4.0\n \
+		PLAYWRIGHT_VERSION=1.51.1\n \
+		N8N_VERSION=1.82.3\n \
+		N8N_ENCRYPTION_KEY=$$ENCRYPTION_KEY\n \
+		N8N_SECURE_COOKIE=false\n \
+		NODE_FUNCTION_ALLOW_EXTERNAL=puppeteer-core,cheerio,n8n-workflow\n \
+		N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\n \
+		N8N_RUNNERS_ENABLED=true\n \
+		N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true\n \
+		N8N_LOG_LEVEL=info\n \
+		N8N_LOG_OUTPUT=console\n \
+		" > .env
+		. .env
+	@echo "sourced .env file."
 
 # Make target to build the n8n Docker image
 build-image:
@@ -25,6 +38,7 @@ build-image:
 	docker build \
 		--build-arg N8N_VERSION=${N8N_VERSION} \
 		--build-arg PUPPETEER_VERSION=${PUPPETEER_VERSION} \
+		--build-arg PLAYWRIGHT_VERSION=${PLAYWRIGHT_VERSION} \
 		-t n8n-${N8N_VERSION} \
 		.
 
@@ -44,6 +58,13 @@ docker-up: build-image
 		echo "Creating volume..."; \
 		docker volume create n8n_data-${N8N_VERSION}; \
 	fi
+	@echo "Checking if volume exists..."
+	@if docker volume inspect n8n_backups > /dev/null 2>&1; then \
+		echo "Volume 'n8n_backups' already exists, hopping to the next task 🦘."; \
+	else \
+		echo "Creating volume..."; \
+		docker volume create n8n_backups; \
+	fi
 	@echo "Running Docker container..."
 	docker run -d \
 		--name n8n-${N8N_VERSION} \
@@ -51,8 +72,10 @@ docker-up: build-image
 		-p 5678:5678 \
 		--restart unless-stopped \
 		-v n8n_data-${N8N_VERSION}:/home/node/.n8n \
+		-v n8n_backups:/home/node/n8n_backups \
 		--network n8n_network \
 		n8n-${N8N_VERSION}
+	@echo "use: `make docker-down` to stop the container."
 
 # Make target to stop docker container
 docker-down:
@@ -61,8 +84,6 @@ docker-down:
 	@docker rm n8n-${N8N_VERSION} || echo "Container not found."
 	# Optionally remove the image:
 	# docker rmi n8n-${N8N_VERSION}
+	# Optionally remove the n8n_data volume: DELETES YOUR FLOWS AND CREDENTIALS !!
+	# docker volume rm n8n-${N8N_VERSION}
 	# docker network rm n8n_network
-
-# Make target to initialize the repo for new users (create env, build image, run container)
-init: create-env docker-up
-	@echo "Repository initialization complete! Docker container is running."
