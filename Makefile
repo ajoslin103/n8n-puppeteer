@@ -53,6 +53,7 @@ docker-up: build-image
 		-p 5678:5678 \
 		--restart unless-stopped \
 		-v n8n_data-${N8N_VERSION}:/home/node/.n8n \
+		-v n8n_backups:/home/node/backups \
 		--network n8n_network \
 		n8n-${N8N_VERSION}
 
