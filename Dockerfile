@@ -25,11 +25,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Launch the x-windows server while we're still root
-RUN /usr/bin/Xvfb :99 -screen 0 1024x768x24 &
-
 # Install n8n globally with the specified version
 RUN npm install -g n8n@${N8N_VERSION}
+
+# Create the directory for n8n's configuration
+RUN mkdir -p /home/node/.n8n && chown node:node /home/node/.n8n
+RUN mkdir -p /home/node/backups && chown node:node /home/node/backups
 
 # Install Puppeteer and Playwright
 RUN npm install -g puppeteer-core@${PUPPETEER_VERSION} playwright@${PLAYWRIGHT_VERSION} \
@@ -37,11 +38,8 @@ RUN npm install -g puppeteer-core@${PUPPETEER_VERSION} playwright@${PLAYWRIGHT_V
 
 # Set environment variables for Puppeteer and Playwright
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
-# Create the directory for n8n's configuration
-RUN mkdir -p /home/node/.n8n && chown node:node /home/node/.n8n
-RUN mkdir -p /home/node/backups && chown node:node /home/node/backups
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    HEADLESS=true
 
 # Switch to the 'node' user
 USER node
